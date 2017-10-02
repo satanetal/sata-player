@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyText
+  author: MyText
+  album: MyText
+  year: 1
+  format: MyText
+  file_link: MyText
+  track_time: 1
+
+two:
+  title: MyText
+  author: MyText
+  album: MyText
+  year: 1
+  format: MyText
+  file_link: MyText
+  track_time: 1
