@@ -24,7 +24,6 @@ db:structure:dump
 db:structure:load
 db:version
 dev:cache
-dropbox:authorize
 initializers
 log:clear
 middleware
