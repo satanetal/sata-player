@@ -34,10 +34,6 @@ gem 'mini_magick'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 gem 'dropbox_api'
-<<<<<<< HEAD
-=======
-
->>>>>>> 8fc66730dda4a10f391085c9de31b5003dffcc3d
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
