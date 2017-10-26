@@ -3,11 +3,25 @@
 <p>
   <strong>User:</strong>
   <%= @profile.user_id %>
+  <br/>
+  Token:
+  <%= @profile.dropbox_auth_token %>
+  <br/>
   <%= image_tag @profile.avatar_url(:thumb) if @profile.avatar? %> 
 </p>
 
-<%= if @profile.has_dropbox? %>
+<%- @profile.playlists.each do |playlist| %>
+  Name:
+  <%= playlist.name %><br/>
+  Source:
+  <%= playlist.source %><br/>
+  Tracks:
+  <%= playlist.tracks.map{|track| "#{track.title} #{track.file_size} #{track.author} "}.join("</br>").html_safe %><br/>
+
+<% end %>
+
+<%- if @profile.has_dropbox? %>
   <%= render 'playlists/playlist', collection: @profile.playlists.from_dropbox %>
-<%= end =%>
+<% end %>
  <%= link_to 'Edit', edit_profile_path(@profile) %>
 

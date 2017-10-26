@@ -19,13 +19,11 @@
     
   </div>
   <div class="Dropboxlink">
-  <form>
-<input type="button" value="Кнопка" onClick='location.href="<%= @link %>"'>
-</form>
-    <a href=>Link for dropbox</a>
     
     <%= form.label :dropbox_request_token %>
     <%= form.text_field :dropbox_request_token %>
+    <a href="<%= @link %>" target="_blank" > Get DropBox token </a>
+
   </div>
 
   <div class="actions">

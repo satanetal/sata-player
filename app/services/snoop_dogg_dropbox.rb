@@ -4,8 +4,9 @@ class SnoopDoggDropbox
     @@authenticator.authorize_url # => "https://www.dropbox.com/oauth2/authorize?client_id=nazu7wtht0lkbwf&response_type=code"
   end
 
-  def self.auth_token (request_token)
-    @@auth_bearer = authenticator.get_token(request_token) 
+  def self.auth_token(request_token)
+    db_auth_url()
+    @@auth_bearer = @@authenticator.get_token(request_token) 
     @@auth_bearer.token
   end
 
@@ -15,7 +16,7 @@ class SnoopDoggDropbox
   # end
 
   def initialize auth_token=nil, root_name=""
-    @auth_token ||= SnoopDoggDropbox.auth_token
+    @auth_token = auth_token
     @client = DropboxApi::Client.new(@auth_token)
     @root_name = root_name
   end

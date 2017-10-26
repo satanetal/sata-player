@@ -7,7 +7,7 @@ class Profile < ApplicationRecord
   mount_uploader :avatar, AvatarUploader
   
   def has_dropbox?
-    unless @profile.dropbox_auth_token.nil?
+    unless dropbox_auth_token.nil?
       return false
     end
   end
