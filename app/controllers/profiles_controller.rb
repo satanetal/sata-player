@@ -19,6 +19,7 @@ class ProfilesController < ApplicationController
 
   # GET /profiles/1/edit
   def edit
+    @link = SnoopDoggDropbox.db_auth_url
   end
 
   # POST /profiles
@@ -40,8 +41,13 @@ class ProfilesController < ApplicationController
   # PATCH/PUT /profiles/1
   # PATCH/PUT /profiles/1.json
   def update
+    profile_hash = profile_params
+
+    db_code = params[:dropbox_request_token]
+    profile_hash[:dropbox_auth_token] = SnoopDoggDropbox.auth_token(db_code) if db_code
+    
     respond_to do |format|
-      if @profile.update(profile_params)
+      if @profile.update(profile_hash)
         format.html { redirect_to @profile, notice: 'Profile was successfully updated.' }
         format.json { render :show, status: :ok, location: @profile }
       else
@@ -69,6 +75,6 @@ class ProfilesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def profile_params
-      params.require(:profile).permit(:user_id, :avatar, :avatar_cache)
+      params.require(:profile).permit(:user_id, :avatar, :avatar_cache, :dropbox_auth_token)
     end
 end

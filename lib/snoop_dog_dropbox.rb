@@ -1,8 +1,8 @@
 class SnoopDoggDropbox
-	def initialize root_name='/'
+	def initialize root_name=""
 	  @client = DropboxApi::Client.new("CI-5wXSXYGcAAAAAAAAAdAx5_Em3qwlgwJvEN7ti279LvDkcVHzDMxkFQs2q5UIt")
 	  @root_name = root_name
-	  @playlists = []
+	  @@playlists = []
 	end
 
 #
@@ -10,26 +10,33 @@ def find_play_lists
   snoop(@root_name)
 end
 
-def snoop name=""
-	result = client.list_folder name # /indians
+def snoop folder_name, lvl=0
+	result = client.list_folder folder_name # /indians
  	array_of_hashes = result.instance_variable_get(:@data)["entries"] 
  	mp3 = array_of_hashes.select {|hsh| hsh[".tag"] == "file" && hsh["name"].match(/.mp3/)}
  		if mp3.empty? == false
- 			tracks = []
- 			mp3.each {|hsh| tracks << {track_name: hsh["name"], track_size: hsh["size"], track_path: hsh["path_display"]}}
- 		end
- 		if tracks.empty? == false
- 			playlist = []
- 			playlist << {pl_name: name, pl_tracks: tracks, pl_count: tracks.count}
- 		end
- 		if playlist.empty? == false
- 			@playlists << playlist
+ 			tracks = mp3.map {|hsh| {
+ 									track_name: hsh["name"],
+ 									track_size: hsh["size"],
+ 									track_path: hsh["path_display"]
+ 									}}
+ 			playlist = {
+ 									name: 		folder_name,
+ 									tracks: 	tracks,
+ 									tracks_count: 	tracks.count
+ 								}
+ 			@@playlists << playlist
  		end
 	folders_list = array_of_hashes.select {|hsh| hsh[".tag"] == "folder"} #folder check
-		if folders_list.empty? == false
-			folders_list.each {|elem| snoop(elem["path_display"])}
-		end
+	folders_list.each {|elem| snoop(elem["path_display"], lvl + 1}
+	if lvl > 3
+		return
+	end
 end
+
+
+dropbox = SnoopDoggDropbox.new
+
 # [
 # {".tag"=>"file", "name"=>"01 A Tribe Called Red - Electric Pow Wow Drum.mp3", "path_lower"=>"/indians/01 a tribe called red - electric pow wow drum.mp3", "path_display"=>"/Indians/01 A Tribe Called Red - Electric Pow Wow Drum.mp3", "parent_shared_folder_id"=>"240470446", "id"=>"id:X3e74Hamos4AAAAAAAAACw", "client_modified"=>"2013-03-03T20:23:23Z", "server_modified"=>"2013-03-03T21:38:17Z", "rev"=>"10e5549ae", "size"=>9878698, "sharing_info"=>{"read_only"=>false, "parent_shared_folder_id"=>"240470446", "modified_by"=>"dbid:AACGkTmvvFraOSmJo4VP9EdNw9GjGd1bhU0"}, "content_hash"=>"d7c3425705910ec350d331fe9080711dfc476f544058fa54a01a737abe58dc8c"},
 # {".tag"=>"file", "name"=>"02 A Tribe Called Red - Look At This.mp3", "path_lower"=>"/indians/02 a tribe called red - look at this.mp3", "path_display"=>"/Indians/02 A Tribe Called Red - Look At This.mp3", "parent_shared_folder_id"=>"240470446", "id"=>"id:X3e74Hamos4AAAAAAAAACg", "client_modified"=>"2013-03-03T20:23:54Z", "server_modified"=>"2013-03-03T21:38:17Z", "rev"=>"20e5549ae", "size"=>15181268, "sharing_info"=>{"read_only"=>false, "parent_shared_folder_id"=>"240470446", "modified_by"=>"dbid:AACGkTmvvFraOSmJo4VP9EdNw9GjGd1bhU0"}, "content_hash"=>"a19545449418fbb860f92002d92c50eb11dad3430276e1bef118129d7ff428ef"},
@@ -45,11 +52,9 @@ end
 #Описание метода Снуп
 # Если в папке есть мп3 (нэйм распарсить сплитом и селект по мп3)
 # 	Создать плейлист с именем
-#  	
 # Если в папке есть папки
 # 	В цикле вызвать Snoop для каждой
-#
-# hash_structure
+## hash_structure
 # PlayLists = [PlayList, PlayList, PlayList, PlayList ...] 
 #  PlayList
 #  {
@@ -62,6 +67,3 @@ end
 #  	 size:
 #  	 path:}, ...]
 #  }
-
-#  s = {34,{21,{8,{2,{1,5,{3}},13}},55,{89,{144}}}}
-
